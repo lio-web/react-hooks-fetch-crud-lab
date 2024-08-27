@@ -1,23 +1,42 @@
 import React from "react";
 
-function QuestionItem({ question }) {
-  const { id, prompt, answers, correctIndex } = question;
+function QuestionItem({ question, onDeleteQuestion, onUpdateQuestion }) {
+  function handleDelete() {
+    onDeleteQuestion(question.id);
+  }
 
-  const options = answers.map((answer, index) => (
-    <option key={index} value={index}>
-      {answer}
-    </option>
-  ));
+  function handleChange(event) {
+    const { name, value } = event.target;
+    if (name === "correctIndex") {
+      onUpdateQuestion(question.id, { correctIndex: parseInt(value) });
+    }
+  }
 
   return (
     <li>
-      <h4>Question {id}</h4>
-      <h5>Prompt: {prompt}</h5>
-      <label>
-        Correct Answer:
-        <select defaultValue={correctIndex}>{options}</select>
-      </label>
-      <button>Delete Question</button>
+      <div>
+        <h3>{question.prompt}</h3>
+        <ul>
+          {question.answers.map((answer, index) => (
+            <li key={index}>{answer}</li>
+          ))}
+        </ul>
+        <label>
+          Correct Answer:
+          <select
+            name="correctIndex"
+            value={question.correctIndex}
+            onChange={handleChange}
+          >
+            {question.answers.map((answer, index) => (
+              <option key={index} value={index}>
+                {answer}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button onClick={handleDelete}>Delete Question</button>
+      </div>
     </li>
   );
 }
